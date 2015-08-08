@@ -120,10 +120,10 @@ canv.addEventListener("mouseup",function() {
 
 $(canv).keydown(function(evt) {
    console.log("Key Down");
-   if(evt.keycode == 32) { // space 
+   if(evt.keyCode == 32) { 
       isPlaying = !isPlaying;
       console.log("isPlaying: "+ isPlaying)
-   } else if(evt.keycode == 67) { // 'c' 
+   } else if(evt.keyCode == 67) { // 'c' 
       grid = [];
       drawGrid();
    }
