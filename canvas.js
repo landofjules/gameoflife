@@ -126,6 +126,7 @@ $(canv).keydown(function(evt) {
    } else if(evt.keyCode == 67) { // 'c' 
       grid = [];
       drawGrid();
+      printGrid();
    }
 })
 
