@@ -19,17 +19,17 @@ var C = {
    gridH:10,
    gridW:14,
    cell:40,
-   border:4,
+   border:2,
    spacing:6
 };
 $("body").css("background-color",CLR.bg)
 
 
 // ** VARIABLES **
-var stage = new createjs.Stage("demoCanvas");
 var grid = [];
 var canv = document.getElementById("demoCanvas");
 var ctx = canv.getContext("2d");
+var isPlaying = false;
 
 
 // adjust the canvas based on window size 
@@ -98,7 +98,7 @@ function clickflip(evt) {
    console.log("Click: ",gridX,gridY)
 
    grid[gridX][gridY] = !grid[gridX][gridY];
-   printGrid();
+   drawone(gridX,gridY,grid[gridX][gridY]);
    return grid[gridX][gridY];
 };
 
@@ -109,7 +109,7 @@ canv.addEventListener('mousemove', function(evt) {
       var gridX = Math.floor( mousePos.x / space );
       var gridY = Math.floor( mousePos.y / space );
       grid[gridX][gridY] = mouseCellState;
-      printGrid();
+      drawone(gridX,gridY,grid[gridX][gridY]);
    }
    
 });
@@ -118,6 +118,34 @@ canv.addEventListener("mouseup",function() {
    isMouseDown = false;
 });
 
+$(canv).keydown(function(evt) {
+   console.log("Key Down");
+   if(evt.keycode == 32) { // space 
+      isPlaying = !isPlaying;
+      console.log("isPlaying: "+ isPlaying)
+   } else if(evt.keycode == 67) { // 'c' 
+      grid = [];
+      drawGrid();
+   }
+})
+
+function drawone(x,y,isOn) {
+   var space = C.spacing + C.cell;
+   ctx.beginPath();
+   if(isOn) {
+      ctx.fillStyle = CLR.on;
+      ctx.strokeStyle = CLR.onb;
+   } else {
+      ctx.fillStyle = CLR.bg;
+      ctx.strokeStyle = CLR.offb;
+   }
+   ctx.lineWidth = C.border;
+   ctx.fillRect((space*x)+(C.spacing/2),(space*y)+(C.spacing/2),C.cell,C.cell);
+   ctx.rect((space*x)+(C.spacing/2),(space*y)+(C.spacing/2),C.cell,C.cell);
+   ctx.stroke();
+   ctx.closePath();
+
+}
 
 function printGrid() {
    ctx.fillStyle = CLR.bg;
@@ -163,8 +191,10 @@ function init() {
 
    
     setInterval(function() {
-       updateGrid();
-       printGrid();
+       if(isPlaying){
+          updateGrid();
+          printGrid();
+       }
     }, 1000);
     
    
