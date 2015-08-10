@@ -1,5 +1,5 @@
 // ** PARAMETERS for WEBSITE **
-//  
+ 
 // ====>> COLOR <<==== // 
 var CLR_2000 = {
    bg:"#460662",
@@ -11,7 +11,8 @@ var CLR_bluprint = {
    bg:"#001144",
    offb:"#002288",
    onb:"#0099FF",
-   on:"#ffffff"
+   on:"#ffffff",
+   text:"#3399FF"
 };
 var CLR = CLR_bluprint;
 // ====>> would be CONSTANTS <<==== // 
@@ -20,13 +21,15 @@ var C = {
    gridW:14,
    cell:40,
    border:2,
-   spacing:6
+   spacing:6,
+   delay:500
 };
 $("body").css("background-color",CLR.bg)
 
 
 // ** VARIABLES **
 var grid = [];
+var savedGrid = [];
 var canv = document.getElementById("demoCanvas");
 var ctx = canv.getContext("2d");
 var isPlaying = false;
@@ -118,16 +121,35 @@ canv.addEventListener("mouseup",function() {
    isMouseDown = false;
 });
 
+// ** KEY STROKES **
 $(canv).keydown(function(evt) {
    console.log("Key Down");
-   if(evt.keyCode == 32) { 
+   if(evt.keyCode == 32           // 'space' to start and stop 
+      || evt.keyCode == 13) {         // or 'enter'
       isPlaying = !isPlaying;
       console.log("isPlaying: "+ isPlaying)
-   } else if(evt.keyCode == 67) { // 'c' 
+      if(isPlaying) saveGrid();     //save game for 'r' 
+      cmessage("space",1000);
+   } else if(evt.keyCode == 67) {   // 'c' to clear 
       grid = [];
       drawGrid();
       printGrid();
-   }
+      isPlaying = false;
+   } else if(evt.keyCode == 82) {   // 'r' to revert to last play
+      isPlaying = false;
+      grid = savedGrid;
+      drawGrid();
+      printGrid();
+   } 
+   // 'c' or 's' to capture a snippet and save it
+   // 'l' to load a snippet
+   // 'k' to show all keyboard shortcuts
+   // 't' to change the theme
+   // 'w' to toggle wrap
+   // 'h' to show heat map (color based on how many touching)
+   // '-' and '='/'+' to go be bigger or smaller
+   // '<' and '>' to go slower or faster
+   // add ded squares that were touched
 })
 
 function drawone(x,y,isOn) {
@@ -181,6 +203,24 @@ function printGrid() {
    
 }
 
+function saveGrid() {
+   savedGrid=[];
+   for(var i=0;i<grid.length;i++) savedGrid.push(grid[i].slice());
+}
+
+function cmessage(msg,color) {
+   $("#bigMsg").remove();
+   $(canv).after('<h1 id="bigMsg">'+msg+'</h1>');
+   $("#bigMsg").css("color",(arguments.length==1)?CLR.text:color);
+   $("#bigMsg").animate({
+      left:'42%',
+      opacity:'0',
+      "font-size":"3em"
+   }, speed, function() {
+      $(this).remove()
+   });
+   
+}
 
 
 function init() {
@@ -196,7 +236,7 @@ function init() {
           updateGrid();
           printGrid();
        }
-    }, 1000);
+    }, C.delay);
     
    
 }
@@ -211,17 +251,13 @@ function updateGrid() {
          if(grid[i][j]) {
             if(N(i,j)<2) {
                newgrid[i][j] = false;
-               console.log("lonely death at "+i+","+j);
-               console.log(N(i,j));
             }
             if(N(i,j)>3) {
                newgrid[i][j] = false;
-               console.log("crowded death at "+i+","+j);
             }
          } else {
             if(N(i,j)==3){ 
                newgrid[i][j] = true;
-               console.log("life at "+i+","+j);
             }
          }
       }}
