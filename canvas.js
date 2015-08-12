@@ -129,7 +129,8 @@ $(canv).keydown(function(evt) {
       isPlaying = !isPlaying;
       console.log("isPlaying: "+ isPlaying)
       if(isPlaying) saveGrid();     //save game for 'r' 
-   } else if(evt.keyCode == 67) {   // 'c' to clear 
+   } else if(evt.keyCode == 67      // 'c' to clear 
+          || evt.keyCode == 27) {   // or 'esc'
       grid = [];
       drawGrid();
       printGrid();
