@@ -12,3 +12,5 @@ Choose themes
 TOOLBAR:
 
 place | capture | sizeSlider | playButton | millisecondInterval | themes
+
+Make a feature so that when you press r it reverts to last pause
