@@ -129,7 +129,6 @@ $(canv).keydown(function(evt) {
       isPlaying = !isPlaying;
       console.log("isPlaying: "+ isPlaying)
       if(isPlaying) saveGrid();     //save game for 'r' 
-      cmessage("space",1000);
    } else if(evt.keyCode == 67) {   // 'c' to clear 
       grid = [];
       drawGrid();
@@ -206,20 +205,6 @@ function printGrid() {
 function saveGrid() {
    savedGrid=[];
    for(var i=0;i<grid.length;i++) savedGrid.push(grid[i].slice());
-}
-
-function cmessage(msg,color) {
-   $("#bigMsg").remove();
-   $(canv).after('<h1 id="bigMsg">'+msg+'</h1>');
-   $("#bigMsg").css("color",(arguments.length==1)?CLR.text:color);
-   $("#bigMsg").animate({
-      left:'42%',
-      opacity:'0',
-      "font-size":"3em"
-   }, speed, function() {
-      $(this).remove()
-   });
-   
 }
 
 
