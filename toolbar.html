@@ -1,0 +1,55 @@
+<html>
+   <head>
+      <title>Life</title>
+      <style>
+body {
+   margin: 0;
+   background-color:black;
+}
+#demoCanvas {
+   position: fixed;
+   left: 50%;
+   top: 50%;
+}
+#toolbar {
+   position:fixed;
+   z-index:100;
+   bottom:2em;
+   width:100%;
+   list-style-type:none;
+   font-family: 'Raleway', sans-serif;
+   color:#fff;
+   margin:0 auto;
+   padding:0;
+   text-align:center;
+}
+#toolbar li {
+   display:inline;
+   padding: 0.5em 1em;
+   border:1px solid #fff;
+   background-color:#308245;
+}
+#toolbar a {
+   vertical-align:middle;
+}
+#toolbar input[type=range]::-moz-range-thumb {
+    background: #2C3A73;
+    border: 1px solid #bdc3c7;
+    border-radius:0px;
+    width:8px;
+    height:16px;
+
+}
+      </style>
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+<link href='http://fonts.googleapis.com/css?family=Raleway' rel='stylesheet' type='text/css'>
+      <link rel="stylesheet" href="style.css">
+   </head>
+   <body>
+      <ul id="toolbar">
+         <li><a>speed:<input type="range"></a></li>
+         <li><a><i class="fa fa-play"></i></a></li>
+         <li><a>size:<input type="range"></a></li>
+      </ul>
+   </body>
+</html>
