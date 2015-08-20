@@ -32,6 +32,7 @@ body {
 #toolbar a {
    vertical-align:middle;
 }
+
 #toolbar input[type=range]::-moz-range-thumb {
     background: #2C3A73;
     border: 1px solid #bdc3c7;
@@ -39,6 +40,19 @@ body {
     width:8px;
     height:16px;
 
+}
+#toolbar input[type=range]::-moz-range-thumb:hover {
+    background: #384A96;
+}
+#playbtn:hover {
+   background: #205C2F;
+   cursor:pointer;
+}
+#playbtn.running {
+   background: #AD0000;
+}
+#playbtn.running:hover {
+   background: #700000;
 }
       </style>
       <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
@@ -50,10 +64,11 @@ body {
       </canvas>
       <ul id="toolbar">
          <li><a>speed:<input type="range"></a></li>
-         <li><a><i class="fa fa-play"></i></a></li>
+         <li id="playbtn"><a><i class="fa fa-play"></i></a></li>
          <li><a>size:<input type="range"></a></li>
       </ul>
       <script src="https://code.jquery.com/jquery-2.1.4.js"></script>
       <script type="text/javascript" src="canvas.js"></script>
+      <script type="text/javascript" src="toolbar.js"></script>
    </body>
 </html>
