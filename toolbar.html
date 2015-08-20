@@ -14,7 +14,7 @@ body {
 #toolbar {
    position:fixed;
    z-index:100;
-   bottom:2em;
+   bottom:0.5em;
    width:100%;
    list-style-type:none;
    font-family: 'Raleway', sans-serif;
@@ -46,10 +46,14 @@ body {
       <link rel="stylesheet" href="style.css">
    </head>
    <body>
+      <canvas id="demoCanvas" width="500" height="300" tabindex='1'>
+      </canvas>
       <ul id="toolbar">
          <li><a>speed:<input type="range"></a></li>
          <li><a><i class="fa fa-play"></i></a></li>
          <li><a>size:<input type="range"></a></li>
       </ul>
+      <script src="https://code.jquery.com/jquery-2.1.4.js"></script>
+      <script type="text/javascript" src="canvas.js"></script>
    </body>
 </html>
