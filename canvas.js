@@ -141,11 +141,12 @@ $(canv).keydown(function(evt) {
       drawGrid();
       printGrid();
    } 
-   // 'c' or 's' to capture a snippet and save it
+   // 's' to capture a snippet and save it
    // 'l' to load a snippet
    // 'k' to show all keyboard shortcuts
    // 't' to change the theme
    // 'w' to toggle wrap
+   // 'g' for ground covered
    // 'h' to show heat map (color based on how many touching)
    // '-' and '='/'+' to go be bigger or smaller
    // '<' and '>' to go slower or faster
