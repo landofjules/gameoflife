@@ -19,9 +19,9 @@ var CLR = CLR_bluprint;
 var C = {
    gridH:10,
    gridW:14,
-   cell:40,
-   border:2,
-   spacing:6,
+   cell:10,
+   border:1,
+   spacing:2,
    delay:500
 };
 $("body").css("background-color",CLR.bg)
@@ -125,7 +125,7 @@ canv.addEventListener("mouseup",function() {
 });
 
 // ** KEY STROKES **
-$(canv).keydown(function(evt) {
+$(window).keydown(function(evt) {
    console.log("Key Down");
    if(evt.keyCode == 32           // 'space' to start and stop 
       || evt.keyCode == 13) {         // or 'enter'
@@ -298,14 +298,21 @@ function adjustPlayButton() {
 }
 
 //speed slider
-var slidMouseDown=false;
 $("#speedSlider").val(50);
-$("#speedSlider").mousedown(function(){slidMouseDown=true});
-$("#speedSlider").mouseup(function(){slidMouseDown=false});
-$("#speedSlider").mousemove(function() {if(slidMouseDown) changeSpeed();});
 $("#speedSlider").change(changeSpeed);
 function changeSpeed() {
    C.delay = 10 * (100-$("#speedSlider").val());
    clearInterval(mainInterval);
    mainInterval = setInterval(intervalFunc,C.delay);
+}
+
+//size slider
+$("#sizeSlider").change(changeSize);
+function changeSize() {
+   var val = $("#sizeSlider").val();
+   C.cell = val * 0.8 + 5;
+   C.border = val / 10;
+   C.spacing = val / 7;
+   rszWindow();
+   console.log(C.cell)
 }
