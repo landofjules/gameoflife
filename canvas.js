@@ -217,8 +217,10 @@ function saveGrid() {
 function init() {
 
    // Fill the grid
+   spacBord();
    rszWindow();
    mainInterval = setInterval(intervalFunc, C.delay);
+
 }
 function intervalFunc() {
     if(isPlaying){
@@ -310,9 +312,27 @@ function changeSpeed() {
 $("#sizeSlider").change(changeSize);
 function changeSize() {
    var val = $("#sizeSlider").val();
-   C.cell = val * 0.8 + 5;
-   C.border = val / 10;
-   C.spacing = val / 7;
+   C.cell = Math.floor(val * 0.8 + 5);
+   spacBord();
+   console.log("Cell Size: "+C.cell)
+   console.log("   Border: "+C.border)
+   console.log("  Spacing: "+C.spacing)
    rszWindow();
-   console.log(C.cell)
+}
+function spacBord() {
+   if(C.cell < 15) {
+      C.border = 1;
+      C.spacing = 3;
+   } else if(C.cell < 34) {
+      C.border = 2;
+      C.spacing = 4;
+   } else if(C.cell < 60){
+      C.border = 4;
+      C.spacing = 8;
+   } else {
+      C.border = 6;
+      C.spacing = 10;
+   }
+   //C.spacing = Math.floor(C.spacing);
+   //C.border = Math.floor(C.border);
 }
