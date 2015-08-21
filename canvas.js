@@ -33,6 +33,7 @@ var savedGrid = [];
 var canv = document.getElementById("demoCanvas");
 var ctx = canv.getContext("2d");
 var isPlaying = false;
+var mainInterval;
 
 
 // adjust the canvas based on window size 
@@ -217,16 +218,13 @@ function init() {
 
    // Fill the grid
    rszWindow();
-   
-    window.setInterval(function() {
-       console.log("click");
-       if(isPlaying){
-          updateGrid();
-          printGrid();
-       }
-    }, C.delay);
-    
-   
+   mainInterval = setInterval(intervalFunc, C.delay);
+}
+function intervalFunc() {
+    if(isPlaying){
+       updateGrid();
+       printGrid();
+    }
 }
 
 // the rules of the game of life
@@ -282,6 +280,7 @@ function gridwrap(x,y) {
 }
 
 $("#playbtn").click(function() {
+   if(!isPlaying) saveGrid();
    isPlaying = !isPlaying;
    adjustPlayButton();
 })
@@ -296,4 +295,17 @@ function adjustPlayButton() {
       $("#playbtn i").attr("class",playClass);
       $("#playbtn").removeClass("running");
    }
+}
+
+//speed slider
+var slidMouseDown=false;
+$("#speedSlider").val(50);
+$("#speedSlider").mousedown(function(){slidMouseDown=true});
+$("#speedSlider").mouseup(function(){slidMouseDown=false});
+$("#speedSlider").mousemove(function() {if(slidMouseDown) changeSpeed();});
+$("#speedSlider").change(changeSpeed);
+function changeSpeed() {
+   C.delay = 10 * (100-$("#speedSlider").val());
+   clearInterval(mainInterval);
+   mainInterval = setInterval(intervalFunc,C.delay);
 }

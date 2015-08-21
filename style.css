@@ -1,0 +1,53 @@
+
+body {
+   margin: 0;
+   background-color:black;
+}
+#demoCanvas {
+   position: fixed;
+   left: 50%;
+   top: 50%;
+}
+#toolbar {
+   position:fixed;
+   z-index:100;
+   bottom:0.5em;
+   width:100%;
+   list-style-type:none;
+   font-family: 'Raleway', sans-serif;
+   color:#fff;
+   margin:0 auto;
+   padding:0;
+   text-align:center;
+}
+#toolbar li {
+   display:inline;
+   padding: 0.5em 1em;
+   border:1px solid #fff;
+   background-color:#308245;
+}
+#toolbar a {
+   vertical-align:middle;
+}
+
+#toolbar input[type=range]::-moz-range-thumb {
+    background: #2C3A73;
+    border: 1px solid #bdc3c7;
+    border-radius:0px;
+    width:8px;
+    height:16px;
+
+}
+#toolbar input[type=range]::-moz-range-thumb:hover {
+    background: #384A96;
+}
+#playbtn:hover {
+   background: #205C2F;
+   cursor:pointer;
+}
+#playbtn.running {
+   background: #AD0000;
+}
+#playbtn.running:hover {
+   background: #700000;
+}
