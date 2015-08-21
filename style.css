@@ -41,6 +41,10 @@ body {
 #toolbar input[type=range]::-moz-range-thumb:hover {
     background: #384A96;
 }
+#stepbtn:hover {
+   background: #205C2F;
+   cursor:pointer;
+}
 #playbtn:hover {
    background: #205C2F;
    cursor:pointer;

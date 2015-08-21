@@ -34,6 +34,7 @@ var canv = document.getElementById("demoCanvas");
 var ctx = canv.getContext("2d");
 var isPlaying = false;
 var mainInterval;
+var doWrap = true;
 
 
 // adjust the canvas based on window size 
@@ -148,7 +149,9 @@ $(window).keydown(function(evt) {
    // 'l' to load a snippet
    // 'k' to show all keyboard shortcuts
    // 't' to change the theme
-   // 'w' to toggle wrap
+   else if(evt.keyCode = 87) { // 'w' to toggle wrap
+      doWrap = !doWrap;
+   }
    // 'g' for ground covered
    // 'h' to show heat map (color based on how many touching)
    // '-' and '='/'+' to go be bigger or smaller
@@ -217,9 +220,9 @@ function saveGrid() {
 function init() {
 
    // Fill the grid
-   spacBord();
+   changeSpeed();
+   changeSize();
    rszWindow();
-   mainInterval = setInterval(intervalFunc, C.delay);
 
 }
 function intervalFunc() {
@@ -274,9 +277,13 @@ function N(x,y) {
 
 // returns locations wraped
 function gridwrap(x,y) {
-   if(x<0) x = C.gridW + x;
+   if(x<0) if(doWrap) x = C.gridW + x;
+           else return false;
+   else if(x>=C.gridW && !doWrap) return false;
    else x = x % C.gridW;
-   if(y<0) y = C.gridH + y;
+   if(y<0) if(doWrap) y = C.gridH + y;
+           else return false;
+   else if(y>=C.gridH && !doWrap) return false;
    else y = y % C.gridH;
    return grid[x][y];
 }
@@ -300,9 +307,9 @@ function adjustPlayButton() {
 }
 
 //speed slider
-$("#speedSlider").val(50);
 $("#speedSlider").change(changeSpeed);
 function changeSpeed() {
+   console.log("hello speed?");
    C.delay = 10 * (100-$("#speedSlider").val());
    clearInterval(mainInterval);
    mainInterval = setInterval(intervalFunc,C.delay);
@@ -336,3 +343,7 @@ function spacBord() {
    //C.spacing = Math.floor(C.spacing);
    //C.border = Math.floor(C.border);
 }
+$("#stepbtn").click(function() {
+   updateGrid();
+   printGrid();
+});
