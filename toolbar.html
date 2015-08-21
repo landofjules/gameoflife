@@ -59,16 +59,15 @@ body {
 <link href='http://fonts.googleapis.com/css?family=Raleway' rel='stylesheet' type='text/css'>
       <link rel="stylesheet" href="style.css">
    </head>
-   <body>
+   <body onload="init()">
       <canvas id="demoCanvas" width="500" height="300" tabindex='1'>
       </canvas>
       <ul id="toolbar">
-         <li><a>speed:<input type="range"></a></li>
+         <li><a>Speed:<input type="range"></a></li>
          <li id="playbtn"><a><i class="fa fa-play"></i></a></li>
-         <li><a>size:<input type="range"></a></li>
+         <li><a>Size:<input type="range"></a></li>
       </ul>
       <script src="https://code.jquery.com/jquery-2.1.4.js"></script>
       <script type="text/javascript" src="canvas.js"></script>
-      <script type="text/javascript" src="toolbar.js"></script>
    </body>
 </html>

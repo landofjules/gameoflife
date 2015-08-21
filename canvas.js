@@ -42,6 +42,8 @@ function rszWindow() {
    canv.height = window.innerHeight;
    canv.width = window.innerWidth;
    setGridSize();
+   
+   //trim grid based on cells that fit
    canv.height = C.gridH * (C.cell + C.spacing);
    canv.width = C.gridW * (C.cell + C.spacing);
    canv.style.marginLeft = -canv.width/2;
@@ -54,12 +56,12 @@ function setGridSize() {
   var space = C.spacing + C.cell;
   C.gridW = Math.floor(canv.width/space);
   C.gridH = Math.floor(canv.height/space);
-  drawGrid();
+  populateGrid();
 }
 
 // setup function: draws the grid
 // also used for readjusting
-function drawGrid() {
+function populateGrid() {
    var oldgrid = grid;
    grid = [];
    for(var i=0;i<C.gridW;i++) grid.push([]);
@@ -98,7 +100,7 @@ function clickflip(evt) {
    var space = C.spacing + C.cell;
    var gridX = Math.floor( mousePos.x / space );
    var gridY = Math.floor( mousePos.y / space );
-   console.log("Click: ",gridX,gridY)
+   //console.log("Click: ",gridX,gridY)
 
    grid[gridX][gridY] = !grid[gridX][gridY];
    drawone(gridX,gridY,grid[gridX][gridY]);
@@ -132,13 +134,13 @@ $(canv).keydown(function(evt) {
    } else if(evt.keyCode == 67      // 'c' to clear 
           || evt.keyCode == 27) {   // or 'esc'
       grid = [];
-      drawGrid();
+      populateGrid();
       printGrid();
       isPlaying = false;
    } else if(evt.keyCode == 82) {   // 'r' to revert to last play
       isPlaying = false;
       grid = savedGrid;
-      drawGrid();
+      populateGrid();
       printGrid();
    } 
    // 's' to capture a snippet and save it
@@ -151,6 +153,7 @@ $(canv).keydown(function(evt) {
    // '-' and '='/'+' to go be bigger or smaller
    // '<' and '>' to go slower or faster
    // add ded squares that were touched
+   adjustPlayButton();
 })
 
 function drawone(x,y,isOn) {
@@ -214,11 +217,9 @@ function init() {
 
    // Fill the grid
    rszWindow();
-   drawGrid();
-   printGrid(); 
-
    
-    setInterval(function() {
+    window.setInterval(function() {
+       console.log("click");
        if(isPlaying){
           updateGrid();
           printGrid();
@@ -252,6 +253,7 @@ function updateGrid() {
 }
 
 function step() {
+   console.log("tick");
    updateGrid();
    printGrid();
 }
@@ -277,4 +279,21 @@ function gridwrap(x,y) {
    if(y<0) y = C.gridH + y;
    else y = y % C.gridH;
    return grid[x][y];
+}
+
+$("#playbtn").click(function() {
+   isPlaying = !isPlaying;
+   adjustPlayButton();
+})
+
+var playClass = "fa fa-play";
+var pauseClass = "fa fa-pause";
+function adjustPlayButton() {
+   if(isPlaying) {
+      $("#playbtn i").attr("class",pauseClass);
+      $("#playbtn").addClass("running");
+   } else {
+      $("#playbtn i").attr("class",playClass);
+      $("#playbtn").removeClass("running");
+   }
 }
