@@ -32,10 +32,14 @@ var grid = [];
 var savedGrid = [];
 var canv = document.getElementById("demoCanvas");
 var ctx = canv.getContext("2d");
-var isPlaying = false;
 var mainInterval;
-var doWrap = true;
 
+// booleans
+var isPlaying = false;
+var doWrap = true;
+var isMouseDown=false;
+var mouseCellState=false;
+var wasEdited=false;
 
 // adjust the canvas based on window size 
 // and the number of squares that fit in
@@ -81,8 +85,6 @@ function populateGrid() {
 
 
 // mouse interactivity with game
-var isMouseDown=false;
-var mouseCellState=false;
 function getMousePos(canvas, evt) {
   var rect = canvas.getBoundingClientRect();
   return {
@@ -94,6 +96,7 @@ function getMousePos(canvas, evt) {
 canv.addEventListener('mousedown', function(evt) {
    mouseCellState = clickflip(evt);
    isMouseDown = true;
+   if(!isPlaying) wasEdited = true;
 } , false);
 
 
@@ -127,30 +130,34 @@ canv.addEventListener("mouseup",function() {
 
 // ** KEY STROKES **
 $(window).keydown(function(evt) {
-   console.log("Key Down");
    if(evt.keyCode == 32           // 'space' to start and stop 
       || evt.keyCode == 13) {         // or 'enter'
       isPlaying = !isPlaying;
       console.log("isPlaying: "+ isPlaying)
-      if(isPlaying) saveGrid();     //save game for 'r' 
+      if(isPlaying && wasEdited) saveGrid();  //save game for 'r' 
+      if(!isPlaying) wasEdited = false;
    } else if(evt.keyCode == 67      // 'c' to clear 
           || evt.keyCode == 27) {   // or 'esc'
       grid = [];
       populateGrid();
       printGrid();
       isPlaying = false;
+      cmessage("Clear");
    } else if(evt.keyCode == 82) {   // 'r' to revert to last play
       isPlaying = false;
+      wasEdited = false;
       grid = savedGrid;
       populateGrid();
       printGrid();
+      cmessage("Revert");
    } 
    // 's' to capture a snippet and save it
    // 'l' to load a snippet
    // 'k' to show all keyboard shortcuts
    // 't' to change the theme
-   else if(evt.keyCode = 87) { // 'w' to toggle wrap
+   else if(evt.keyCode == 87) { // 'w' to toggle wrap
       doWrap = !doWrap;
+      cmessage("Wrap",doWrap);
    }
    // 'g' for ground covered
    // 'h' to show heat map (color based on how many touching)
@@ -159,6 +166,13 @@ $(window).keydown(function(evt) {
    // add ded squares that were touched
    adjustPlayButton();
 })
+
+function cmessage(message,onword) {
+   if(arguments.length==2) message += onword?" on":" off"
+   $("#message").remove();
+   $(canv).after('<div id="message">'+message+"</div>");
+   $("#message").fadeOut(800);
+}
 
 function drawone(x,y,isOn) {
    var space = C.spacing + C.cell;
@@ -289,9 +303,11 @@ function gridwrap(x,y) {
 }
 
 $("#playbtn").click(function() {
-   if(!isPlaying) saveGrid();
+   if(!isPlaying && wasEdited) saveGrid();
+   if(isPlaying) wasEdited = false;
    isPlaying = !isPlaying;
    adjustPlayButton();
+
 })
 
 var playClass = "fa fa-play";

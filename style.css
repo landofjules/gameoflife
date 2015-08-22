@@ -55,3 +55,16 @@ body {
 #playbtn.running:hover {
    background: #700000;
 }
+#message {
+   position:fixed;
+   z-index:100;
+   top:0.5em;
+   width:100%;
+   font-family: 'Raleway', sans-serif;
+   color:#fff;
+   margin:0 auto;
+   padding:0;
+   text-align:center;
+   font-size:3em;
+   text-shadow:0 0 5px #001144;
+}
