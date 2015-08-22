@@ -130,8 +130,7 @@ canv.addEventListener("mouseup",function() {
 
 // ** KEY STROKES **
 $(window).keydown(function(evt) {
-   if(evt.keyCode == 32           // 'space' to start and stop 
-      || evt.keyCode == 13) {         // or 'enter'
+   if(evt.keyCode == 32) {           // 'space' to start and stop 
       isPlaying = !isPlaying;
       console.log("isPlaying: "+ isPlaying)
       if(isPlaying && wasEdited) saveGrid();  //save game for 'r' 
@@ -143,6 +142,9 @@ $(window).keydown(function(evt) {
       printGrid();
       isPlaying = false;
       cmessage("Clear");
+   } else if(evt.keyCode == 13) {   // 'enter' to step
+      updateGrid();
+      printGrid();
    } else if(evt.keyCode == 82) {   // 'r' to revert to last play
       isPlaying = false;
       wasEdited = false;
@@ -154,7 +156,10 @@ $(window).keydown(function(evt) {
    // 's' to capture a snippet and save it
    // 'l' to load a snippet
    // 'k' to show all keyboard shortcuts
-   // 't' to change the theme
+   // 't' to toggle keyboard
+   else if(evt.keyCode == 84) {
+      $("#toolbar").toggle();
+   }
    else if(evt.keyCode == 87) { // 'w' to toggle wrap
       doWrap = !doWrap;
       cmessage("Wrap",doWrap);
