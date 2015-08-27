@@ -1,12 +1,6 @@
 // ** PARAMETERS for WEBSITE **
  
 // ====>> COLOR <<==== // 
-var CLR_2000 = {
-   bg:"#460662",
-   offb:"#580853",
-   onb:"#8F0047",
-   on:"#ffcc00"
-};
 var CLR_bluprint = {
    bg:"#001144",
    offb:"#002288",
@@ -15,6 +9,7 @@ var CLR_bluprint = {
    text:"#3399FF"
 };
 var CLR = CLR_bluprint;
+
 // ====>> would be CONSTANTS <<==== // 
 var C = {
    gridH:10,
@@ -83,6 +78,24 @@ function populateGrid() {
    }
 }
 
+function randomGrid() {
+   var oldgrid = grid;
+   var flip;
+   grid = [];
+   
+   for(var i=0;i<C.gridW;i++) grid.push([]);
+   for(var i=0;i<C.gridW;i++) {
+      for(var j=0;j<C.gridH;j++) {
+        flip = Math.random();
+        if(flip < .5) {
+          grid[i].push(false); 
+        }
+        else {
+          grid[i].push(true); 
+        }
+      }
+   }
+}
 
 // mouse interactivity with game
 function getMousePos(canvas, evt) {
@@ -99,13 +112,11 @@ canv.addEventListener('mousedown', function(evt) {
    if(!isPlaying) wasEdited = true;
 } , false);
 
-
 function clickflip(evt) {
    var mousePos = getMousePos(canv, evt);
    var space = C.spacing + C.cell;
    var gridX = Math.floor( mousePos.x / space );
    var gridY = Math.floor( mousePos.y / space );
-   //console.log("Click: ",gridX,gridY)
 
    grid[gridX][gridY] = !grid[gridX][gridY];
    drawone(gridX,gridY,grid[gridX][gridY]);
@@ -141,7 +152,7 @@ $(window).keydown(function(evt) {
       populateGrid();
       printGrid();
       isPlaying = false;
-      cmessage("Clear");
+      cmessage("Clear", 800);
    } else if(evt.keyCode == 13) {   // 'enter' to step
       updateGrid();
       printGrid();
@@ -151,19 +162,34 @@ $(window).keydown(function(evt) {
       grid = savedGrid;
       populateGrid();
       printGrid();
-      cmessage("Revert");
-   } 
+      cmessage("Revert", 800);
+   } else if(evt.keyCode == 75) {  //'k' to view Keyboard Shortcuts
+     cmessage("Keybaord Shortcuts<br><br>   \
+              <p align=\"left\">&nbsp;&nbsp;&nbsp; space: start/stop<br>         \
+              &nbsp;&nbsp;&nbsp; enter: step<br>               \
+              &nbsp;&nbsp;&nbsp; c: clear<br>                  \
+              &nbsp;&nbsp;&nbsp; r: revert<br>                 \
+              &nbsp;&nbsp;&nbsp; z: random board<br>           \
+              &nbsp;&nbsp;&nbsp; t: toggle view<br>            \
+              &nbsp;&nbsp;&nbsp; w: toggle wrap mode<br>       \
+              &nbsp;&nbsp;&nbsp; k: view keyboard shortcuts<br></p>", 2300);
+   } else if(evt.keyCode == 84) { // 't' to toggle keyboard
+      $("#toolbar").toggle();
+   } else if(evt.keyCode == 87) { // 'w' to toggle wrap
+      doWrap = !doWrap;
+      cmessage("Wrap", 800, doWrap);
+   } else if(evt.keyCode == 90) { //'z' for random board
+     isPlaying = false;
+     wasEdited = true;
+     grid = [];
+     randomGrid();
+     printGrid();
+     cmessage("Random", 800);
+   }
+   
+   
    // 's' to capture a snippet and save it
    // 'l' to load a snippet
-   // 'k' to show all keyboard shortcuts
-   // 't' to toggle keyboard
-   else if(evt.keyCode == 84) {
-      $("#toolbar").toggle();
-   }
-   else if(evt.keyCode == 87) { // 'w' to toggle wrap
-      doWrap = !doWrap;
-      cmessage("Wrap",doWrap);
-   }
    // 'g' for ground covered
    // 'h' to show heat map (color based on how many touching)
    // '-' and '='/'+' to go be bigger or smaller
@@ -172,11 +198,11 @@ $(window).keydown(function(evt) {
    adjustPlayButton();
 })
 
-function cmessage(message,onword) {
-   if(arguments.length==2) message += onword?" on":" off"
+function cmessage(message, time, onword) {
+   if(arguments.length==3) message += onword?" on":" off"
    $("#message").remove();
    $(canv).after('<div id="message">'+message+"</div>");
-   $("#message").fadeOut(800);
+   $("#message").fadeOut(time);
 }
 
 function drawone(x,y,isOn) {
@@ -194,7 +220,6 @@ function drawone(x,y,isOn) {
    ctx.rect((space*x)+(C.spacing/2),(space*y)+(C.spacing/2),C.cell,C.cell);
    ctx.stroke();
    ctx.closePath();
-
 }
 
 function printGrid() {
@@ -235,15 +260,14 @@ function saveGrid() {
    for(var i=0;i<grid.length;i++) savedGrid.push(grid[i].slice());
 }
 
-
 function init() {
 
    // Fill the grid
    changeSpeed();
    changeSize();
    rszWindow();
-
 }
+
 function intervalFunc() {
     if(isPlaying){
        updateGrid();
@@ -275,7 +299,6 @@ function updateGrid() {
 }
 
 function step() {
-   console.log("tick");
    updateGrid();
    printGrid();
 }
@@ -330,7 +353,6 @@ function adjustPlayButton() {
 //speed slider
 $("#speedSlider").change(changeSpeed);
 function changeSpeed() {
-   console.log("hello speed?");
    C.delay = 10 * (100-$("#speedSlider").val());
    clearInterval(mainInterval);
    mainInterval = setInterval(intervalFunc,C.delay);
@@ -342,11 +364,9 @@ function changeSize() {
    var val = $("#sizeSlider").val();
    C.cell = Math.floor(val * 0.8 + 5);
    spacBord();
-   console.log("Cell Size: "+C.cell)
-   console.log("   Border: "+C.border)
-   console.log("  Spacing: "+C.spacing)
    rszWindow();
 }
+
 function spacBord() {
    if(C.cell < 15) {
       C.border = 1;
@@ -361,9 +381,8 @@ function spacBord() {
       C.border = 6;
       C.spacing = 10;
    }
-   //C.spacing = Math.floor(C.spacing);
-   //C.border = Math.floor(C.border);
 }
+
 $("#stepbtn").click(function() {
    updateGrid();
    printGrid();
