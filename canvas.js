@@ -179,7 +179,7 @@ $(window).keydown(function(evt) {
       printGrid();
       cmessage("Revert", 800);
    } else if(evt.keyCode == 75) {  //'k' to view Keyboard Shortcuts
-     cmessage("Keybaord Shortcuts<br><br>   \
+     cmessage("Keybaord Shortcuts<br>   \
               <p align=\"left\">&nbsp;&nbsp;&nbsp; space: start/stop<br>         \
               &nbsp;&nbsp;&nbsp; enter: step<br>               \
               &nbsp;&nbsp;&nbsp; c: clear<br>                  \
