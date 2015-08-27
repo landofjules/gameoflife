@@ -10,6 +10,20 @@ var CLR_bluprint = {
 };
 var CLR = CLR_bluprint;
 
+var CLR_heatmap = {
+  zero:"#008080", 
+  one:"#9ACD32", 
+  two:"#EE82EE", 
+  three:"#FA8072", 
+  four:"#FFA500", 
+  five:"#FFFF00", 
+  six:"#FF0000", 
+  seven:"#FF0000", 
+  eight:"#FF0000", 
+  newCell:"#000000"
+};
+var heatmap = CLR_heatmap;
+
 // ====>> would be CONSTANTS <<==== // 
 var C = {
    gridH:10,
@@ -32,9 +46,10 @@ var mainInterval;
 // booleans
 var isPlaying = false;
 var doWrap = true;
-var isMouseDown=false;
-var mouseCellState=false;
-var wasEdited=false;
+var isMouseDown = false;
+var mouseCellState = false;
+var wasEdited = false;
+var isHeatmap = false;
 
 // adjust the canvas based on window size 
 // and the number of squares that fit in
@@ -164,11 +179,12 @@ $(window).keydown(function(evt) {
       printGrid();
       cmessage("Revert", 800);
    } else if(evt.keyCode == 75) {  //'k' to view Keyboard Shortcuts
-     cmessage("Keybaord Shortcuts<br><br>   \
+     cmessage("Keybaord Shortcuts<br>   \
               <p align=\"left\">&nbsp;&nbsp;&nbsp; space: start/stop<br>         \
               &nbsp;&nbsp;&nbsp; enter: step<br>               \
               &nbsp;&nbsp;&nbsp; c: clear<br>                  \
               &nbsp;&nbsp;&nbsp; r: revert<br>                 \
+              &nbsp;&nbsp;&nbsp; h: toggle heat map<br>        \
               &nbsp;&nbsp;&nbsp; z: random board<br>           \
               &nbsp;&nbsp;&nbsp; t: toggle view<br>            \
               &nbsp;&nbsp;&nbsp; w: toggle wrap mode<br>       \
@@ -185,13 +201,16 @@ $(window).keydown(function(evt) {
      randomGrid();
      printGrid();
      cmessage("Random", 800);
+   } else if(evt.keyCode == 72) { // 'h' to show heat map (color based on how many touching)
+     isHeatmap = !isHeatmap;
+     printGrid();
+     cmessage("Heat Map", 800, isHeatmap);
    }
-   
    
    // 's' to capture a snippet and save it
    // 'l' to load a snippet
    // 'g' for ground covered
-   // 'h' to show heat map (color based on how many touching)
+   
    // '-' and '='/'+' to go be bigger or smaller
    // '<' and '>' to go slower or faster
    // add ded squares that were touched
@@ -208,12 +227,24 @@ function cmessage(message, time, onword) {
 function drawone(x,y,isOn) {
    var space = C.spacing + C.cell;
    ctx.beginPath();
-   if(isOn) {
-      ctx.fillStyle = CLR.on;
-      ctx.strokeStyle = CLR.onb;
-   } else {
-      ctx.fillStyle = CLR.bg;
-      ctx.strokeStyle = CLR.offb;
+   
+   if(isHeatmap == false) {
+     if(isOn) {
+        ctx.fillStyle = CLR.on;
+        ctx.strokeStyle = CLR.onb;
+     } else {
+        ctx.fillStyle = CLR.bg;
+        ctx.strokeStyle = CLR.offb;
+     }
+   }
+   else {
+     if(isOn) {
+        ctx.fillStyle = heatmap.newCell;
+        ctx.strokeStyle = CLR.onb;
+     } else {
+        ctx.fillStyle = CLR.bg;
+        ctx.strokeStyle = CLR.offb;
+     }
    }
    ctx.lineWidth = C.border;
    ctx.fillRect((space*x)+(C.spacing/2),(space*y)+(C.spacing/2),C.cell,C.cell);
@@ -226,7 +257,6 @@ function printGrid() {
    ctx.fillStyle = CLR.bg;
    ctx.fillRect(0,0,canv.width,canv.height);
 
-
    var i, j, pi, pj;
    var space = C.spacing + C.cell;
    for(i = 0;i < C.gridW;i++) {
@@ -235,21 +265,39 @@ function printGrid() {
          pj = j * space;
          ctx.beginPath();
 
-         if(grid[i][j]) {
-            ctx.fillStyle = CLR.on;
-            ctx.strokeStyle = CLR.onb;
+         if(isHeatmap == false) {
+           if(grid[i][j]) {
+              ctx.fillStyle = CLR.on;
+              ctx.strokeStyle = CLR.onb;
+           } else {
+              ctx.fillStyle = CLR.bg;
+              ctx.strokeStyle = CLR.offb;
+           }
          } else {
-            ctx.fillStyle = CLR.bg;
-            ctx.strokeStyle = CLR.offb;
+           if(grid[i][j]) {
+             var num = N(i, j);
+             ctx.strokeStyle = CLR.onb;
+             if(num == 0) {ctx.fillStyle = heatmap.zero;}
+             else if(num == 1) {ctx.fillStyle = heatmap.one;}
+             else if(num == 2) {ctx.fillStyle = heatmap.two;}
+             else if(num == 3) {ctx.fillStyle = heatmap.three;}
+             else if(num == 4) {ctx.fillStyle = heatmap.four;}
+             else if(num == 5) {ctx.fillStyle = heatmap.five;}
+             else if(num == 6) {ctx.fillStyle = heatmap.six;}
+             else if(num == 7) {ctx.fillStyle = heatmap.seven;}
+             else if(num == 8) {ctx.fillStyle = heatmap.eight;}
+           }
+           else {
+             ctx.fillStyle = CLR.bg;
+             ctx.strokeStyle = CLR.offb;
+           }
          }
-
 
          ctx.lineWidth = C.border;
          ctx.fillRect(pi+(C.spacing/2),pj+(C.spacing/2),C.cell,C.cell);
          ctx.rect(pi+(C.spacing/2),pj+(C.spacing/2),C.cell,C.cell);
          ctx.stroke();
          ctx.closePath();
-         
       }
    }
    
@@ -261,7 +309,6 @@ function saveGrid() {
 }
 
 function init() {
-
    // Fill the grid
    changeSpeed();
    changeSize();
@@ -361,7 +408,7 @@ function changeSpeed() {
 //size slider
 $("#sizeSlider").change(changeSize);
 function changeSize() {
-   var val = $("#sizeSlider").val();
+   var val = (100 - $("#sizeSlider").val());
    C.cell = Math.floor(val * 0.8 + 5);
    spacBord();
    rszWindow();
