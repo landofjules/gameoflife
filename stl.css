@@ -2,7 +2,6 @@
 body {
    margin: 0;
    background-color:black;
-   font-family: 'Raleway', sans-serif;
 }
 #demoCanvas {
    position: fixed;
@@ -15,6 +14,7 @@ body {
    bottom:0.5em;
    width:100%;
    list-style-type:none;
+   font-family: 'Raleway', sans-serif;
    color:#fff;
    margin:0 auto;
    padding:0;
@@ -60,46 +60,11 @@ body {
    z-index:100;
    top:0.5em;
    width:100%;
+   font-family: 'Raleway', sans-serif;
    color:#fff;
    margin:0 auto;
    padding:0;
    text-align:center;
    font-size:3em;
    text-shadow:0 0 5px #001144;
-}
-
-.red {
-   color:#E35B5B;
-   /*font-weight:bold;*/
-}
-.green {
-   color:#62CC7D;
-   /*font-weight:bold;*/
-}
-
-#popup {
-   width: 300px;
-   height: 300px;
-   position: absolute;
-   color:#001144;
-   left: 50%;
-   top: 40%; 
-   margin-left: -150px;
-   margin-top: -150px;
-   border: 3px solid #0099FF;
-   border-radius:30px;
-   background-color:#fff;
-   padding:20px 40px;
-   /*background: -moz-linear-gradient (#fff,#eee);*/
-   /*background: -o-linear-gradient (#fff,#eee);*/
-   /*background: -webkit-linear-gradient (#fff,#eee);*/
-   /*background: linear-gradient (#fff,#eee);*/
-}
-
-#popup li {
-    list-style:none;
-}
-
-#popup ul {
-   padding-left:1em;
 }

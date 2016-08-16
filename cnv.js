@@ -1,21 +1,14 @@
 // ** PARAMETERS for WEBSITE **
  
 // ====>> COLOR <<==== // 
-var CLR_2000 = {
-   bg:"#460662",
-   offb:"#580853",
-   onb:"#8F0047",
-   on:"#ffcc00"
-};
 var CLR_bluprint = {
    bg:"#001144",
    offb:"#002288",
    onb:"#0099FF",
    on:"#ffffff",
-   text:"#3399FF",
-   lifed:"#005449"
 };
 var CLR = CLR_bluprint;
+
 // ====>> would be CONSTANTS <<==== // 
 var C = {
    gridH:10,
@@ -26,10 +19,6 @@ var C = {
    delay:500
 };
 $("body").css("background-color",CLR.bg)
-$("#toolbar").click(function() {
-   stepOnce = false;
-   $("#popup").hide();
-});
 
 
 // ** VARIABLES **
@@ -38,7 +27,6 @@ var savedGrid = [];
 var canv = document.getElementById("demoCanvas");
 var ctx = canv.getContext("2d");
 var mainInterval;
-var stepTimeout;
 
 // booleans
 var isPlaying = false;
@@ -46,8 +34,6 @@ var doWrap = true;
 var isMouseDown=false;
 var mouseCellState=false;
 var wasEdited=false;
-var popupup=false;
-var stepOnce=false;
 
 // adjust the canvas based on window size 
 // and the number of squares that fit in
@@ -67,10 +53,10 @@ function rszWindow() {
 
 // size the grid dimensions based on canvas size
 function setGridSize() {
-   var space = C.spacing + C.cell;
-   C.gridW = Math.floor(canv.width/space);
-   C.gridH = Math.floor(canv.height/space);
-   populateGrid();
+  var space = C.spacing + C.cell;
+  C.gridW = Math.floor(canv.width/space);
+  C.gridH = Math.floor(canv.height/space);
+  populateGrid();
 }
 
 // setup function: draws the grid
@@ -91,6 +77,24 @@ function populateGrid() {
    }
 }
 
+function randomGrid() {
+   var oldgrid = grid;
+   var flip;
+   grid = [];
+   
+   for(var i=0;i<C.gridW;i++) grid.push([]);
+   for(var i=0;i<C.gridW;i++) {
+      for(var j=0;j<C.gridH;j++) {
+        flip = Math.random();
+        if(flip < .5) {
+          grid[i].push(false); 
+        }
+        else {
+          grid[i].push(true); 
+        }
+      }
+   }
+}
 
 // mouse interactivity with game
 function getMousePos(canvas, evt) {
@@ -102,23 +106,16 @@ function getMousePos(canvas, evt) {
 }
 
 canv.addEventListener('mousedown', function(evt) {
-   // pretty ui things
-   $("#popup").hide();
-   stepOnce = false;
-   if(!isPlaying) wasEdited = true;
-
-   // actual mechanism
    mouseCellState = clickflip(evt);
    isMouseDown = true;
+   if(!isPlaying) wasEdited = true;
 } , false);
-
 
 function clickflip(evt) {
    var mousePos = getMousePos(canv, evt);
    var space = C.spacing + C.cell;
    var gridX = Math.floor( mousePos.x / space );
    var gridY = Math.floor( mousePos.y / space );
-   //console.log("Click: ",gridX,gridY)
 
    grid[gridX][gridY] = !grid[gridX][gridY];
    drawone(gridX,gridY,grid[gridX][gridY]);
@@ -134,6 +131,7 @@ canv.addEventListener('mousemove', function(evt) {
       grid[gridX][gridY] = mouseCellState;
       drawone(gridX,gridY,grid[gridX][gridY]);
    }
+   
 });
 
 canv.addEventListener("mouseup",function() {
@@ -142,78 +140,68 @@ canv.addEventListener("mouseup",function() {
 
 // ** KEY STROKES **
 $(window).keydown(function(evt) {
-   $("#popup").hide();
-   var stepTemp = false;
    if(evt.keyCode == 32) {           // 'space' to start and stop 
       isPlaying = !isPlaying;
+      console.log("isPlaying: "+ isPlaying)
       if(isPlaying && wasEdited) saveGrid();  //save game for 'r' 
       if(!isPlaying) wasEdited = false;
-      if(!$("#toolbar").is(":visible")) {
-         cmessage(isPlaying?
-                  '<span class="green">Play</span>':
-                  '<span class="red">Stop</span>');
-      }
    } else if(evt.keyCode == 67      // 'c' to clear 
           || evt.keyCode == 27) {   // or 'esc'
       grid = [];
       populateGrid();
       printGrid();
       isPlaying = false;
-      cmessage("Clear");
-   }
-   else if(evt.keyCode == 13) {   // 'enter' to step
-      isPlaying = false;
+      cmessage("Clear", 800);
+   } else if(evt.keyCode == 13) {   // 'enter' to step
       updateGrid();
       printGrid();
-      if(!stepOnce) cmessage('step');
-      stepTemp = true;
-      // return step message after 3 seconds
-      window.clearTimeout(stepTimeout);
-      stepTimeout = window.setTimeout(function() {
-         stepOnce = false;
-      }, 3000);
-   }
-   else if(evt.keyCode == 82) {   // 'r' to revert to last play
+   } else if(evt.keyCode == 82) {   // 'r' to revert to last play
       isPlaying = false;
       wasEdited = false;
       grid = savedGrid;
       populateGrid();
       printGrid();
-      cmessage("Revert");
-   } 
+      cmessage("Revert", 800);
+   } else if(evt.keyCode == 75) {  //'k' to view Keyboard Shortcuts
+     cmessage("Keybaord Shortcuts<br><br>   \
+              <p align=\"left\">&nbsp;&nbsp;&nbsp; space: start/stop<br>         \
+              &nbsp;&nbsp;&nbsp; enter: step<br>               \
+              &nbsp;&nbsp;&nbsp; c: clear<br>                  \
+              &nbsp;&nbsp;&nbsp; r: revert<br>                 \
+              &nbsp;&nbsp;&nbsp; z: random board<br>           \
+              &nbsp;&nbsp;&nbsp; t: toggle view<br>            \
+              &nbsp;&nbsp;&nbsp; w: toggle wrap mode<br>       \
+              &nbsp;&nbsp;&nbsp; k: view keyboard shortcuts<br></p>", 2300);
+   } else if(evt.keyCode == 84) { // 't' to toggle keyboard
+      $("#toolbar").toggle();
+   } else if(evt.keyCode == 87) { // 'w' to toggle wrap
+      doWrap = !doWrap;
+      cmessage("Wrap", 800, doWrap);
+   } else if(evt.keyCode == 90) { //'z' for random board
+     isPlaying = false;
+     wasEdited = true;
+     grid = [];
+     randomGrid();
+     printGrid();
+     cmessage("Random", 800);
+   }
+   
+   
    // 's' to capture a snippet and save it
    // 'l' to load a snippet
-   else if (evt.keyCode == 75) { // 'k' to show keyboard
-      if(!popupup) $("#popup").show();
-   }
-   else if(evt.keyCode == 84) { // 't' to toggle toolbar 
-      $("#toolbar").toggle();
-      cmessage("Toolbar",$("#toolbar").is(":visible"));
-   }
-   else if(evt.keyCode == 87) { // 'w' to toggle wrap
-      doWrap = !doWrap;
-      cmessage("Wrap",doWrap);
-   }
-   else if(evt.keyCode == 90) { // 'z' for random
-      
-   }
    // 'g' for ground covered
    // 'h' to show heat map (color based on how many touching)
    // '-' and '='/'+' to go be bigger or smaller
    // '<' and '>' to go slower or faster
-   // add dead squares that were touched
+   // add ded squares that were touched
    adjustPlayButton();
-   popupup = $("#popup").is(":visible");
-   stepOnce = stepTemp;
 })
 
-function cmessage(message,onword) {
+function cmessage(message, time, onword) {
+   if(arguments.length==3) message += onword?" on":" off"
    $("#message").remove();
-   if(arguments.length==2) message += onword?
-      ' <span class="green">on</span>':
-      ' <span class="red">off</span>';
-      $(canv).after('<div id="message">'+message+"</div>");
-   $("#message").fadeOut(800);
+   $(canv).after('<div id="message">'+message+"</div>");
+   $("#message").fadeOut(time);
 }
 
 function drawone(x,y,isOn) {
@@ -231,7 +219,6 @@ function drawone(x,y,isOn) {
    ctx.rect((space*x)+(C.spacing/2),(space*y)+(C.spacing/2),C.cell,C.cell);
    ctx.stroke();
    ctx.closePath();
-
 }
 
 function printGrid() {
@@ -240,7 +227,7 @@ function printGrid() {
 
 
    var i, j, pi, pj;
-   var space = C.spacing + C.cell; // how much space is  
+   var space = C.spacing + C.cell;
    for(i = 0;i < C.gridW;i++) {
       pi = i * space;
       for(j = 0;j < C.gridH;j++) {
@@ -264,6 +251,7 @@ function printGrid() {
          
       }
    }
+   
 }
 
 function saveGrid() {
@@ -271,13 +259,14 @@ function saveGrid() {
    for(var i=0;i<grid.length;i++) savedGrid.push(grid[i].slice());
 }
 
-
 function init() {
+
    // Fill the grid
    changeSpeed();
    changeSize();
    rszWindow();
 }
+
 function intervalFunc() {
     if(isPlaying){
        updateGrid();
@@ -309,7 +298,6 @@ function updateGrid() {
 }
 
 function step() {
-   console.log("tick");
    updateGrid();
    printGrid();
 }
@@ -364,7 +352,6 @@ function adjustPlayButton() {
 //speed slider
 $("#speedSlider").change(changeSpeed);
 function changeSpeed() {
-   console.log("hello speed?");
    C.delay = 10 * (100-$("#speedSlider").val());
    clearInterval(mainInterval);
    mainInterval = setInterval(intervalFunc,C.delay);
@@ -376,9 +363,6 @@ function changeSize() {
    var val = $("#sizeSlider").val();
    C.cell = Math.floor(val * 0.8 + 5);
    spacBord();
-   console.log("Cell Size: "+C.cell)
-   console.log("   Border: "+C.border)
-   console.log("  Spacing: "+C.spacing)
    rszWindow();
 }
 
@@ -396,23 +380,9 @@ function spacBord() {
       C.border = 6;
       C.spacing = 10;
    }
-   //C.spacing = Math.floor(C.spacing);
-   //C.border = Math.floor(C.border);
 }
+
 $("#stepbtn").click(function() {
    updateGrid();
    printGrid();
 });
-
-//functions to draw a selection square and cover it up
-function drawMarq(sq1x,sq1y,sq2x,sq2y) {
-   var px  
-   var py  
-   var lx  
-   var ly
-}
-
-function coverMarq(sq1x,sq1y,sq2x,sq2y) {
-   
-}
-
