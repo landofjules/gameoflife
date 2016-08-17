@@ -29,6 +29,7 @@ $("body").css("background-color",CLR.bg)
 $("#toolbar li").not("#keybtn").click(function() {
    stepOnce = false;
    $("#popup").hide();
+   popupup=false;
 });
 
 
@@ -104,6 +105,7 @@ function getMousePos(canvas, evt) {
 canv.addEventListener('mousedown', function(evt) {
    // pretty ui things
    $("#popup").hide();
+   popupup=false;
    stepOnce = false;
    if(!isPlaying) wasEdited = true;
 
@@ -202,6 +204,8 @@ $(window).keydown(function(evt) {
    // '-' and '='/'+' to go be bigger or smaller
    // '<' and '>' to go slower or faster
    // add dead squares that were touched
+   
+   
    adjustPlayButton();
    popupup = $("#popup").is(":visible");
    stepOnce = stepTemp;
@@ -234,6 +238,7 @@ function drawone(x,y,isOn) {
 
 }
 
+// actualy draw the grid with canvas elements
 function printGrid() {
    ctx.fillStyle = CLR.bg;
    ctx.fillRect(0,0,canv.width,canv.height);
@@ -261,6 +266,7 @@ function printGrid() {
          ctx.rect(pi+(C.spacing/2),pj+(C.spacing/2),C.cell,C.cell);
          ctx.stroke();
          ctx.closePath();
+         
          
       }
    }
