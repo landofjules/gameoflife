@@ -6,7 +6,7 @@ body {
 }
 #demoCanvas {
    position: fixed;
-   left: 50%;
+   left: 51%;
    top: 50%;
 }
 #toolbar {
@@ -41,14 +41,12 @@ body {
 #toolbar input[type=range]::-moz-range-thumb:hover {
     background: #384A96;
 }
-#stepbtn:hover {
+
+#playbtn:hover, #stepbtn:hover, #keybtn:hover, #loadbtn:hover {
    background: #205C2F;
    cursor:pointer;
 }
-#playbtn:hover {
-   background: #205C2F;
-   cursor:pointer;
-}
+
 #playbtn.running {
    background: #AD0000;
 }

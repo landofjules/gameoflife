@@ -26,7 +26,7 @@ var C = {
    delay:500
 };
 $("body").css("background-color",CLR.bg)
-$("#toolbar").click(function() {
+$("#toolbar li").not("#keybtn").click(function() {
    stepOnce = false;
    $("#popup").hide();
 });
@@ -349,6 +349,15 @@ $("#playbtn").click(function() {
 
 })
 
+$("#stepbtn").click(function() {
+   updateGrid();
+   printGrid();
+});
+
+$("#keybtn").click(function() {
+   $("#popup").show();
+})
+
 var playClass = "fa fa-play";
 var pauseClass = "fa fa-pause";
 function adjustPlayButton() {
@@ -399,10 +408,7 @@ function spacBord() {
    //C.spacing = Math.floor(C.spacing);
    //C.border = Math.floor(C.border);
 }
-$("#stepbtn").click(function() {
-   updateGrid();
-   printGrid();
-});
+
 
 //functions to draw a selection square and cover it up
 function drawMarq(sq1x,sq1y,sq2x,sq2y) {
