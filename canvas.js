@@ -16,6 +16,10 @@ var CLR_bluprint = {
    lifed:"#005449"
 };
 var CLR = CLR_bluprint;
+
+const SHOW_NUMBER_MINIMUM = 15;
+
+
 // ====>> would be CONSTANTS <<==== // 
 var C = {
    gridH:10,
@@ -44,6 +48,7 @@ var stepTimeout;
 // booleans
 var isPlaying = false;
 var doWrap = true;
+var showNumber = false;
 var isMouseDown=false;
 var mouseCellState=false;
 var wasEdited=false;
@@ -140,6 +145,7 @@ canv.addEventListener('mousemove', function(evt) {
 
 canv.addEventListener("mouseup",function() {
    isMouseDown = false;
+   if(showNumber && C.cell > SHOW_NUMBER_MINIMUM ) printGrid();
 });
 
 // ** KEY STROKES **
@@ -185,22 +191,33 @@ $(window).keydown(function(evt) {
    } 
    // 's' to capture a snippet and save it
    // 'l' to load a snippet
-   else if (evt.keyCode == 75) { // 'k' to show keyboard
-      if(!popupup) $("#popup").show();
-   }
    else if(evt.keyCode == 84) { // 't' to toggle toolbar 
       $("#toolbar").toggle();
       cmessage("Toolbar",$("#toolbar").is(":visible"));
    }
    else if(evt.keyCode == 87) { // 'w' to toggle wrap
       doWrap = !doWrap;
+      if(showNumber && C.cell > SHOW_NUMBER_MINIMUM ) printGrid();
       cmessage("Wrap",doWrap);
    }
    else if(evt.keyCode == 90) { // 'z' for random
+     isPlaying = false;
+     wasEdited = true;
+     grid = [];
+     randomGrid();
+     printGrid();
+     cmessage("Random");
+   }
+   else if(evt.keyCode == 78) { // 'n' for number touching
       
+      showNumber = !showNumber;
+      printGrid();
+      cmessage("N-Adjacent", showNumber);
+   }
+   else { // 'k' (or anything else) to show help menu
+      if(!popupup) $("#popup").show();
    }
    // 'g' for ground covered
-   // 'h' to show heat map (color based on how many touching)
    // '-' and '='/'+' to go be bigger or smaller
    // '<' and '>' to go slower or faster
    // add dead squares that were touched
@@ -267,6 +284,25 @@ function printGrid() {
          ctx.stroke();
          ctx.closePath();
          
+         if(showNumber && C.cell > SHOW_NUMBER_MINIMUM ) {
+            var num = N(i,j)
+            
+            // the color of the number will be the same as the border
+            // the color of the numbers will forshadow the future state of the cell
+            if(grid[i][j]) {
+               if(num==2 || num==3) ctx.fillStyle = CLR.onb;
+               else ctx.fillStyle = CLR.offb;
+            } else {
+               if(num==3) ctx.fillStyle = CLR.onb;
+               else ctx.fillStyle = CLR.offb;
+            }
+            
+            ctx.font = ( C.cell * 2/3 ) + "px Arial";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            
+            if(num>0 || grid[i][j]) ctx.fillText(num,pi+(C.spacing/2)+(C.cell/2),pj+(C.spacing/2)+(C.cell/2));
+         }
          
       }
    }
@@ -361,7 +397,7 @@ $("#stepbtn").click(function() {
 });
 
 $("#keybtn").click(function() {
-   $("#popup").show();
+   $("#popup").toggle();
 })
 
 var playClass = "fa fa-play";
@@ -415,6 +451,24 @@ function spacBord() {
    //C.border = Math.floor(C.border);
 }
 
+function randomGrid() {
+   var oldgrid = grid;
+   var flip;
+   grid = [];
+   
+   for(var i=0;i<C.gridW;i++) grid.push([]);
+   for(var i=0;i<C.gridW;i++) {
+      for(var j=0;j<C.gridH;j++) {
+        flip = Math.random();
+        if(flip < .5) {
+          grid[i].push(false); 
+        }
+        else {
+          grid[i].push(true); 
+        }
+      }
+   }
+}
 
 //functions to draw a selection square and cover it up
 function drawMarq(sq1x,sq1y,sq2x,sq2y) {

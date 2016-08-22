@@ -1,23 +1,20 @@
-Add a nice control panel with
-- Start and stop
-- Interval
-- size
 
-Give the ability to save and load configurations
+KEYBOARD
+>< for slower or faster
++- for bigger or smaller
 
-Choose themes
 
-TOOLBAR:
+Deck out popup
+    Readjust size
+    Add header and subtitle
+    Add fork on github icon
+    Add 
 
-place | capture | sizeSlider | playButton | millisecondInterval | themes
 
-Give the slider a millisecond, and pixel width count
+Make capture and save feature
+Make sliders exponential
+Allow text entry to sliders
 
-##KEYBOARD
+DONE
 Z for random
-C for capture
-V for paste
-L for load
 N for number touching
-
-Make the board into a class so that thumbnails can be drawn

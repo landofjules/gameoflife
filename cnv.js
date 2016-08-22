@@ -34,6 +34,7 @@ var doWrap = true;
 var isMouseDown=false;
 var mouseCellState=false;
 var wasEdited=false;
+var showNumbers=false;
 
 // adjust the canvas based on window size 
 // and the number of squares that fit in
@@ -248,6 +249,16 @@ function printGrid() {
          ctx.rect(pi+(C.spacing/2),pj+(C.spacing/2),C.cell,C.cell);
          ctx.stroke();
          ctx.closePath();
+         
+         // draw number touching
+         if(showNumbers) {
+            
+            if(grid[i][j]) ctx.fillStyle = CLR.onb;
+            else ctx.fillStyle = CLR.offb;
+            
+            ctx.font = C.cell *2/3;
+               
+         }
          
       }
    }
