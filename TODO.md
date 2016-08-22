@@ -8,8 +8,8 @@ Deck out popup
     Readjust size
     Add header and subtitle
     Add fork on github icon
-    Add 
-
+    Add explenation page
+    
 
 Make capture and save feature
 Make sliders exponential
