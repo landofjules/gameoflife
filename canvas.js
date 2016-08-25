@@ -427,9 +427,6 @@ function changeSize() {
    var val = $("#sizeSlider").val();
    C.cell = Math.floor(val * 0.8 + 5);
    spacBord();
-   console.log("Cell Size: "+C.cell)
-   console.log("   Border: "+C.border)
-   console.log("  Spacing: "+C.spacing)
    rszWindow();
 }
 
