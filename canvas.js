@@ -152,7 +152,10 @@ canv.addEventListener("mouseup",function() {
 $(window).keydown(function(evt) {
    $("#popup").hide();
    var stepTemp = false;
-   if(evt.keyCode == 32) {           // 'space' to start and stop 
+   
+   var key = String.fromCharCode(event.keyCode);
+   
+   if(evt.keyCode == 32) { // 'space' to start and stop 
       isPlaying = !isPlaying;
       if(isPlaying && wasEdited) saveGrid();  //save game for 'r' 
       if(!isPlaying) wasEdited = false;
@@ -161,8 +164,7 @@ $(window).keydown(function(evt) {
                   '<span class="green">Play</span>':
                   '<span class="red">Stop</span>');
       }
-   } else if(evt.keyCode == 67      // 'c' to clear 
-          || evt.keyCode == 27) {   // or 'esc'
+   } else if( evt.keyCode == 67 || evt.keyCode == 27) {   // 'c' or 'esc' to clear board
       grid = [];
       populateGrid();
       printGrid();
@@ -173,7 +175,7 @@ $(window).keydown(function(evt) {
       isPlaying = false;
       updateGrid();
       printGrid();
-      if(!stepOnce) cmessage('step');
+      if(!stepOnce) cmessage('Step');
       stepTemp = true;
       // return step message after 3 seconds
       window.clearTimeout(stepTimeout);
@@ -195,12 +197,12 @@ $(window).keydown(function(evt) {
       $("#toolbar").toggle();
       cmessage("Toolbar",$("#toolbar").is(":visible"));
    }
-   else if(evt.keyCode == 87) { // 'w' to toggle wrap
+   else if( evt.keyCode == 87) { // 'w' to toggle wrap
       doWrap = !doWrap;
       if(showNumber && C.cell > SHOW_NUMBER_MINIMUM ) printGrid();
       cmessage("Wrap",doWrap);
    }
-   else if(evt.keyCode == 90) { // 'z' for random
+   else if(event.keyCode == 90) { // 'z' for random
      isPlaying = false;
      wasEdited = true;
      grid = [];
@@ -214,13 +216,12 @@ $(window).keydown(function(evt) {
       printGrid();
       cmessage("N-Adjacent", showNumber);
    }
-   else { // 'k' (or anything else) to show help menu
+   else if(/[a-zA-Z0-9]/.test(key)) { // 'k' (or anything else) to show help menu
       if(!popupup) $("#popup").show();
    }
    // 'g' for ground covered
    // '-' and '='/'+' to go be bigger or smaller
    // '<' and '>' to go slower or faster
-   // add dead squares that were touched
    
    
    adjustPlayButton();
@@ -413,16 +414,15 @@ function adjustPlayButton() {
 }
 
 //speed slider
-$("#speedSlider").change(changeSpeed);
+$("#speedSlider").on('input',changeSpeed);
 function changeSpeed() {
-   console.log("hello speed?");
    C.delay = 10 * (100-$("#speedSlider").val());
    clearInterval(mainInterval);
    mainInterval = setInterval(intervalFunc,C.delay);
 }
 
 //size slider
-$("#sizeSlider").change(changeSize);
+$("#sizeSlider").on('input',changeSize);
 function changeSize() {
    var val = $("#sizeSlider").val();
    C.cell = Math.floor(val * 0.8 + 5);
