@@ -67,7 +67,7 @@ body {
    padding:0;
    text-align:center;
    font-size:3em;
-   text-shadow:0 0 5px #001144;
+   text-shadow:0 0 5px #001144, 0 0 2px #014;
 }
 
 .red {
