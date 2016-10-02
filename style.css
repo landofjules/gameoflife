@@ -6,8 +6,9 @@ body {
 }
 #demoCanvas {
    position: fixed;
-   left: 51%;
+   left: 50%;
    top: 50%;
+   cursor:crosshair;
 }
 #toolbar {
    position:fixed;
