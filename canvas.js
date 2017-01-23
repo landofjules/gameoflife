@@ -351,13 +351,7 @@ function updateGrid() {
    grid = newgrid;
 }
 
-function step() {
-   console.log("tick");
-   updateGrid();
-   printGrid();
-}
-
-//how many squares are getting lit
+//how many adjacent squares are alive
 function N(x,y) {
    var n = 0;
    if(gridwrap(x+1,y+1)) n++;
@@ -371,7 +365,7 @@ function N(x,y) {
    return n;
 }
 
-// returns locations wraped
+// returns status of a cell with wrap
 function gridwrap(x,y) {
    if(x<0) if(doWrap) x = C.gridW + x;
            else return false;
@@ -383,6 +377,8 @@ function gridwrap(x,y) {
    else y = y % C.gridH;
    return grid[x][y];
 }
+
+// ******* TOOLBAR FUNCTIONALITY ********* //
 
 $("#playbtn").click(function() {
    if(!isPlaying && wasEdited) saveGrid();
@@ -430,6 +426,7 @@ function changeSize() {
    rszWindow();
 }
 
+// sets border, and spacing between cells based on cell size
 function spacBord() {
    if(C.cell < 15) {
       C.border = 1;
@@ -448,6 +445,7 @@ function spacBord() {
    //C.border = Math.floor(C.border);
 }
 
+// generates a random grid (courtesy of ahnilica)
 function randomGrid() {
    var oldgrid = grid;
    var flip;
@@ -466,16 +464,3 @@ function randomGrid() {
       }
    }
 }
-
-//functions to draw a selection square and cover it up
-function drawMarq(sq1x,sq1y,sq2x,sq2y) {
-   var px  
-   var py  
-   var lx  
-   var ly
-}
-
-function coverMarq(sq1x,sq1y,sq2x,sq2y) {
-   
-}
-
